@@ -12,10 +12,9 @@ canvas.oncontextmenu = (e) => {
 var ctx = canvas.getContext('2d');
 
 var img = new Image()
-img.src = 'belle delphine 3.jpg';
+img.src = './new-shoes-2-copy-test.png';
 
 mainDiv.append(canvas);
-mainDiv.append(img);
 
 var transX = 0;
 var transY = 0;
@@ -32,12 +31,11 @@ var scale = 1;
 loop();
 function draw() {
 
-
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   ctx.save();
   ctx.beginPath();
   ctx.translate(transX + dragOffset.x, transY + dragOffset.y);
-  // ctx.scale(scale, scale);
+  ctx.scale(scale, scale);
   ctx.drawImage(img, 0, 0);
   ctx.rect(0, 0, 10, 10);
   ctx.fillStyle = 'red';
@@ -51,7 +49,7 @@ function loop() {
   draw();
 }
 
-canvas.addEventListener('wheel', disableScroll)
+canvas.addEventListener('wheel', disableScroll);
 
 canvas.addEventListener('mousedown', handleMouseDown);
 
@@ -63,14 +61,11 @@ canvas.addEventListener('mouseup', () => {
 function handleMouseDown(e) {
   if(e.shiftKey && e.button === 0) {
     var rect = canvas.getBoundingClientRect();
-    console.log(rect);
     var mouseX = e.clientX - rect.left;
     var mouseY = e.clientY - rect.top;
   
     startDrag = new Vector(mouseX, mouseY);
 
-    console.log(e);
-  
     canvas.addEventListener('mousemove', move);
   }
 }
@@ -88,6 +83,22 @@ function move(e) {
     var newDragOffset = PreviousDragOffset.add(startAndEndDragDifference)
   
     dragOffset = newDragOffset;
+
+    if(dragOffset.x >= 0) {
+      dragOffset.x = 0;
+    }
+
+    if(dragOffset.x + (img.width * scale)  <= canvas.width) {
+      dragOffset.x = canvas.width - (img.width * scale);
+    }
+
+    if(dragOffset.y >= 0) {
+      dragOffset.y = 0;
+    }
+
+    if(dragOffset.y + (img.height * scale) <= canvas.height) {
+      dragOffset.y = canvas.height - (img.height * scale);
+    }
   }
 }
 
@@ -105,7 +116,21 @@ function handleZoom(e) {
     }
   }
 
-  console.log(e);
+  if(dragOffset.x >= 0) {
+    dragOffset.x = 0;
+  }
+
+  if(dragOffset.x + (img.width * scale)  <= canvas.width) {
+    dragOffset.x = canvas.width - (img.width * scale);
+  }
+
+  if(dragOffset.y >= 0) {
+    dragOffset.y = 0;
+  }
+
+  if(dragOffset.y + (img.height * scale) <= canvas.height) {
+    dragOffset.y = canvas.height - (img.height * scale);
+  }
 
 }
 
