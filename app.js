@@ -104,17 +104,31 @@ function move(e) {
 
 function handleZoom(e) {
 
-  if(Math.sign(e.deltaY) === -1) {
+  var rect = canvas.getBoundingClientRect();
+  var mouseX = e.clientX - rect.left;
+  var mouseY = e.clientY - rect.top;
 
-    scale += 0.05;
+  /*
+    The code below is from this Stackoverflow thread - 
+    https://stackoverflow.com/questions/49245168/zoom-in-out-at-mouse-position-in-canvas 
+    thank you Amir
+  */
+  var direction = e.deltaY > 0 ? -1 : 1;
+  var factor = 0.2;
+  var zoom = 1 * direction * factor;
 
-  } else if(Math.sign(e.deltaY) === 1) {
-    if(scale > 1) {
-      scale -= 0.05;
-  } else {
-      scale = 1;
-    }
+  var wx = (mouseX - dragOffset.x) / (canvas.width * scale);
+  var wy = (mouseY - dragOffset.y) / (canvas.height * scale);
+
+  dragOffset.x -= wx * canvas.width * zoom;
+  dragOffset.y -= wy * canvas.height * zoom;
+
+  scale += zoom;
+
+  if(scale < 1) {
+    scale = 1;
   }
+  
 
   if(dragOffset.x >= 0) {
     dragOffset.x = 0;
